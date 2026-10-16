@@ -113,7 +113,7 @@ public final class MainActivity extends AppCompatActivity {
     private final Runnable ticker = new Runnable() {
         @Override public void run() {
             updatePlayer();
-            if("library".equals(mode)&&!loading&&(auth.isConnected()||mega.hasAccount())&&android.os.SystemClock.elapsedRealtime()-lastLibraryPoll>2500) {
+            if("library".equals(mode)&&!loading&&auth.isConnected()&&android.os.SystemClock.elapsedRealtime()-lastLibraryPoll>2500) {
                 lastLibraryPoll=android.os.SystemClock.elapsedRealtime();
                 if(LibraryScanService.anyRunning()||libraryWasRunning||"scanning".equals(catalogStatus.phase)) loadLibrary(false);
             }
@@ -162,7 +162,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         });
         updateAccount();
-        if (auth.isConnected()||mega.hasAccount()) openLibrary(); else showDisconnected();
+        if (auth.isConnected()) openLibrary(); else showDisconnected();
         if(TvUi.isTv(this)) connect.post(() -> { if(connect.getVisibility()==View.VISIBLE && connect.isEnabled()) connect.requestFocus(); });
     }
 
@@ -187,12 +187,11 @@ public final class MainActivity extends AppCompatActivity {
 
         HorizontalScrollView tabsScroll = new HorizontalScrollView(this); tabsScroll.setHorizontalScrollBarEnabled(false);
         LinearLayout tabs = horizontal();
-        for (String tab : new String[]{"Música", "Videos", "Mi Drive", "Compartido", "MEGA", "Mis listas"}) {
+        for (String tab : new String[]{"Música", "Videos", "Mi Drive", "Compartido", "Mis listas"}) {
             MaterialButton chip = button(tab, false); tabs.addView(chip, new LinearLayout.LayoutParams(-2, dp(42)));
             chip.setOnClickListener(v -> {
                 handler.removeCallbacks(librarySearch);search.setText(""); history.clear();
-                if("MEGA".equals(tab))startActivity(new Intent(this,MegaActivity.class));
-                else if("Música".equals(tab)||"Videos".equals(tab)){libraryVideos="Videos".equals(tab);openLibrary();}
+                if("Música".equals(tab)||"Videos".equals(tab)){libraryVideos="Videos".equals(tab);openLibrary();}
                 else if ("Mis listas".equals(tab)) showLists();
                 else { mode = "drive"; location = new Location("root", tab, "", "Compartido".equals(tab)); load(false); }
             });
@@ -406,11 +405,11 @@ public final class MainActivity extends AppCompatActivity {
                     else if(catalogStatus.failed>0)libraryStatus.setText(catalogStatus.total+" archivos multimedia · "+catalogStatus.failed+" ubicaciones sin acceso\nToca aquí para ver el detalle.");
                     else if(catalogStatus.resumable())libraryStatus.setText("Pausado · "+catalogStatus.found+" archivos multimedia encontrados\n"+(catalogStatus.message.isEmpty()?"El avance está guardado; pulsa Continuar.":catalogStatus.message));
                     else if("complete".equals(catalogStatus.phase))libraryStatus.setText(catalogStatus.total+" archivos multimedia · Escaneo completado\nActualizado: "+android.text.format.DateFormat.format("dd/MM HH:mm",catalogStatus.lastComplete));
-                    else libraryStatus.setText("Reúne la música y los videos de Drive y MEGA, incluidas las carpetas compartidas.");
+                    else libraryStatus.setText("Reúne la música y los videos de Google Drive, incluidas las carpetas compartidas.");
                     empty.setText(running?"Buscando archivos…\n\nPuedes usar otras aplicaciones mientras continúa el escaneo.":
                             catalogStatus.total>0?"No hay archivos que coincidan con esta búsqueda o filtro.":
                             catalogStatus.resumable()?"El escaneo está pausado.\n\nPulsa Continuar para retomar la búsqueda.":
-                            "Tu música y videos en un solo lugar\n\nPulsa Buscar archivos o abre MEGA para reunir los archivos multimedia de tus cuentas y compartidos.");
+                            "Tu música y videos en un solo lugar\n\nPulsa Buscar archivos para reunir los archivos multimedia de Google Drive y compartidos.");
                     empty.setVisibility(tracks.isEmpty()?View.VISIBLE:View.GONE);
                 });
             } catch(Exception error) {
@@ -423,12 +422,6 @@ public final class MainActivity extends AppCompatActivity {
     }
     private void scanButton() {
         if(LibraryScanService.anyRunning()){startService(new Intent(this,LibraryScanService.class).setAction(LibraryScanService.PAUSE));return;}
-        if(mega.hasAccount()){
-            if(!auth.isConnected()){startActivity(new Intent(this,MegaActivity.class));return;}
-            new MaterialAlertDialogBuilder(this).setTitle("Buscar archivos").setItems(new String[]{"Actualizar catálogo de Drive","Actualizar catálogo de MEGA"},(d,index)->{
-                if(index==0)scanDrive();else startActivity(new Intent(this,MegaActivity.class));
-            }).show();return;
-        }
         scanDrive();
     }
     private void scanDrive() {
@@ -453,9 +446,10 @@ public final class MainActivity extends AppCompatActivity {
         } catch(RuntimeException error) {toast("Android no pudo iniciar el escaneo. Mantén la app abierta y vuelve a intentarlo.");}
     }
     private void chooseLibraryOrigin() {
-        String[] labels={"Todos mis archivos","Mis archivos (Drive y MEGA)","Compartidos conmigo (Drive y MEGA)","Solo MEGA","Solo Google Drive"};
-        new MaterialAlertDialogBuilder(this).setTitle("Mostrar archivos de…").setSingleChoiceItems(labels,librarySource,(dialog,which) -> {
-            librarySource=which;libraryOrigin.setText(which==0?"Todas":which==1?"Mis archivos":which==2?"Compartidos":which==3?"MEGA":"Drive");libraryLimit=200;dialog.dismiss();loadLibrary(false);
+        String[] labels={"Todos los archivos de Drive","Mi unidad","Compartidos conmigo"};
+        int selected=Math.max(0,Math.min(librarySource,2));
+        new MaterialAlertDialogBuilder(this).setTitle("Mostrar archivos de…").setSingleChoiceItems(labels,selected,(dialog,which) -> {
+            librarySource=which;libraryOrigin.setText(which==0?"Todos":which==1?"Mi Drive":"Compartidos");libraryLimit=200;dialog.dismiss();loadLibrary(false);
         }).setNegativeButton("Cerrar",null).show();
     }
     private void chooseLibraryOrder() {
@@ -466,14 +460,14 @@ public final class MainActivity extends AppCompatActivity {
     }
     private void updateLibraryPanel(){
         if(libraryPanel==null)return;
-        boolean show="library".equals(mode)&&(auth.isConnected()||mega.hasAccount())&&(catalogStatus.total==0
+        boolean show="library".equals(mode)&&auth.isConnected()&&(catalogStatus.total==0
                 ||"idle".equals(catalogStatus.phase)||LibraryScanService.anyRunning()||catalogStatus.resumable()||catalogStatus.failed>0);
         libraryPanel.setVisibility(show?View.VISIBLE:View.GONE);
     }
     private void libraryOptions(){
         boolean scanning=LibraryScanService.anyRunning();
         String scan=scanning?"Pausar búsqueda":catalogStatus.resumable()?"Continuar búsqueda":"Actualizar toda la biblioteca";
-        String origin=librarySource==0?"Todas":librarySource==1?"Mis archivos":librarySource==2?"Compartidos":librarySource==3?"MEGA":"Drive";
+        String origin=librarySource==0?"Todos":librarySource==1?"Mi Drive":"Compartidos";
         new MaterialAlertDialogBuilder(this).setTitle("Biblioteca · "+origin)
                 .setItems(new String[]{"Ordenar archivos","Elegir origen",scan,"Estado de la biblioteca"},(d,which)->{
                     if(which==0)chooseLibraryOrder();else if(which==1)chooseLibraryOrigin();else if(which==2)scanButton();else libraryDetails();
@@ -482,9 +476,9 @@ public final class MainActivity extends AppCompatActivity {
     private void libraryDetails() {
         String email=auth.accountLabel();
         io.execute(() -> {
-            String issues=library.issues(email)+"\n"+library.issues(mega.namespace());
+            String issues=library.issues(email);
             runOnUiThread(() -> {if(!isDestroyed())new MaterialAlertDialogBuilder(this).setTitle("Tu biblioteca de música")
-                    .setMessage("El catálogo reúne archivos de las cuentas conectadas de Drive y MEGA, incluidos los compartidos accesibles. Recorre subcarpetas. Puedes escanear cada nube desde Buscar archivos o la pestaña MEGA.\n\n"
+                    .setMessage("El catálogo reúne archivos de Google Drive, incluidos los compartidos accesibles. Recorre subcarpetas y puedes actualizarlo desde Buscar archivos.\n\n"
                             +"Se guarda un registro por archivo y cuenta. Las copias que sean archivos distintos conservan su propia entrada.\n\n"
                             +"El escaneo consulta nombres y ubicaciones; el audio se transmite cuando lo reproduces. Puedes pausar y continuar el recorrido.\n\n"
                             +"El botón ▶ junto al buscador reproduce las canciones cargadas. Usa Más para ampliar la lista.\n\n"
@@ -656,7 +650,7 @@ public final class MainActivity extends AppCompatActivity {
 
     private void appMenu() {
         String[] choices={"Abrir reproductor","Ver cola de reproducción","Ecualizador","Nueva lista","Abrir archivos multimedia del teléfono",
-                auth.isConnected()?"Renovar conexión con Drive":"Conectar Google Drive","Desconectar Google Drive","Configurar acceso a Drive","Privacidad y versión","Conectar o gestionar MEGA","Licencias de software"};
+                auth.isConnected()?"Renovar conexión con Drive":"Conectar Google Drive","Desconectar Google Drive","Configurar acceso a Drive","Privacidad y versión","Licencias de software"};
         new MaterialAlertDialogBuilder(this).setTitle("Nube Música").setItems(choices,(d,which)->{
             switch(which){
                 case 0:openPlayer();break;
@@ -671,14 +665,13 @@ public final class MainActivity extends AppCompatActivity {
                     auth.disconnect();updateAccount();mode="drive";history.clear();
                     location=new Location("root","Mi Drive","",false);breadcrumb.setText("Mi Drive");showDisconnected();break;
                 case 7:showDriveSetup();break;
-                case 9:startActivity(new Intent(this,MegaActivity.class));break;
-                case 10:
+                case 9:
                     try(java.io.InputStream in=getAssets().open("THIRD_PARTY_NOTICES.txt");java.util.Scanner reader=new java.util.Scanner(in,"UTF-8")){
                         reader.useDelimiter("\\A");new MaterialAlertDialogBuilder(this).setTitle("Licencias").setMessage(reader.hasNext()?reader.next():"").setPositiveButton("Cerrar",null).show();
                     }catch(java.io.IOException e){toast("Las licencias también están incluidas en el proyecto.");}break;
                 default:
                     new MaterialAlertDialogBuilder(this).setTitle("Privacidad · v0.5.0")
-                            .setMessage("Cuenta: "+auth.accountLabel()+"\n\nGoogle solicita acceso de lectura a los archivos de tu Drive. La app muestra carpetas y archivos multimedia y no modifica, sube ni elimina archivos.\n\nEl audio y el video viajan directamente desde Google o MEGA al teléfono. MEGA usa su SDK oficial para descifrar los archivos en el dispositivo. La contraseña no se guarda y la sesión se protege con Android Keystore. El catálogo, las listas, la cola y los ajustes de sonido se guardan en este dispositivo; no hay anuncios ni analítica.\n\nEl reproductor puede mostrar etiquetas y carátulas que encuentre al reproducir. La biblioteca se busca por nombre y carpeta.\n\nDesconectar detiene la reproducción y el escaneo y cierra el acceso local. Puedes revocar el permiso completo en tu cuenta de Google.\n\nEl ecualizador depende de los efectos de audio disponibles en el teléfono. MEGA se conecta desde su pestaña y mantiene sus cuotas de transferencia. La app no modifica los archivos de MEGA. Descargas permanentes, Chromecast y Android Auto quedan para futuras versiones.")
+                            .setMessage("Cuenta: "+auth.accountLabel()+"\n\nGoogle solicita acceso de lectura a los archivos de tu Drive. La app muestra carpetas y archivos multimedia y no modifica, sube ni elimina archivos.\n\nEl audio y el video viajan directamente desde Google Drive al dispositivo. El catálogo, las listas, la cola y los ajustes de sonido se guardan en este dispositivo; no hay anuncios ni analítica.\n\nEl reproductor puede mostrar etiquetas y carátulas que encuentre al reproducir. La biblioteca se busca por nombre y carpeta.\n\nDesconectar detiene la reproducción y el escaneo y cierra el acceso local. Puedes revocar el permiso completo en tu cuenta de Google.\n\nEl ecualizador depende de los efectos de audio disponibles en el dispositivo. Esta variante para Android TV usa solamente Google Drive. Descargas permanentes, Chromecast y Android Auto quedan para futuras versiones.")
                             .setPositiveButton("Cerrar",null).setNeutralButton("Permisos de Google",(dialog,w)->startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://myaccount.google.com/connections")))).show();
             }
         }).show();
