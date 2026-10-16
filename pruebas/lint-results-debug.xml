@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.13.2">
+
+    <issue
+        id="ExportedService"
+        severity="Warning"
+        message="Exported service does not require permission"
+        category="Security"
+        priority="5"
+        summary="Exported service does not require permission"
+        explanation="Exported services (services which either set `exported=true` or contain an intent-filter and do not specify `exported=false`) should define a permission that an entity must have in order to launch the service or bind to it. Without this, any application can use this service."
+        url="https://goo.gle/ExportedService"
+        urls="https://goo.gle/ExportedService"
+        errorLine1="        &lt;service"
+        errorLine2="         ~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/AndroidManifest.xml"
+            line="36"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="UnsafeDynamicallyLoadedCode"
+        severity="Warning"
+        message="Dynamically loading code using `load` is risky, please use `loadLibrary` instead when possible"
+        category="Security"
+        priority="4"
+        summary="`load` used to dynamically load code"
+        explanation="Dynamically loading code from locations other than the application&apos;s library directory or the Android platform&apos;s built-in library directories is dangerous, as there is an increased risk that the code could have been tampered with. Applications should use `loadLibrary` when possible, which provides increased assurance that libraries are loaded from one of these safer locations. Application developers should use the features of their development environment to place application native libraries into the lib directory of their compiled APKs."
+        errorLine1="                System.load(System.getProperty(&quot;user.dir&quot;) + &quot;/libmega.so&quot;);"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java"
+            line="18"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UnsafeDynamicallyLoadedCode"
+        severity="Warning"
+        message="Dynamically loading code using `load` is risky, please use `loadLibrary` instead when possible"
+        category="Security"
+        priority="4"
+        summary="`load` used to dynamically load code"
+        explanation="Dynamically loading code from locations other than the application&apos;s library directory or the Android platform&apos;s built-in library directories is dangerous, as there is an increased risk that the code could have been tampered with. Applications should use `loadLibrary` when possible, which provides increased assurance that libraries are loaded from one of these safer locations. Application developers should use the features of their development environment to place application native libraries into the lib directory of their compiled APKs."
+        errorLine1="                    System.load(System.getProperty(&quot;user.dir&quot;) + &quot;/libs/libmegajava.so&quot;);"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java"
+            line="21"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UnsafeDynamicallyLoadedCode"
+        severity="Warning"
+        message="Dynamically loading code using `load` is risky, please use `loadLibrary` instead when possible"
+        category="Security"
+        priority="4"
+        summary="`load` used to dynamically load code"
+        explanation="Dynamically loading code from locations other than the application&apos;s library directory or the Android platform&apos;s built-in library directories is dangerous, as there is an increased risk that the code could have been tampered with. Applications should use `loadLibrary` when possible, which provides increased assurance that libraries are loaded from one of these safer locations. Application developers should use the features of their development environment to place application native libraries into the lib directory of their compiled APKs."
+        errorLine1="                        System.load(System.getProperty(&quot;user.dir&quot;) + &quot;/libs/mega.dll&quot;);"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java"
+            line="24"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="UnsafeDynamicallyLoadedCode"
+        severity="Warning"
+        message="Dynamically loading code using `load` is risky, please use `loadLibrary` instead when possible"
+        category="Security"
+        priority="4"
+        summary="`load` used to dynamically load code"
+        explanation="Dynamically loading code from locations other than the application&apos;s library directory or the Android platform&apos;s built-in library directories is dangerous, as there is an increased risk that the code could have been tampered with. Applications should use `loadLibrary` when possible, which provides increased assurance that libraries are loaded from one of these safer locations. Application developers should use the features of their development environment to place application native libraries into the lib directory of their compiled APKs."
+        errorLine1="                            System.load(System.getProperty(&quot;user.dir&quot;) + &quot;/libmega.dylib&quot;);"
+        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java"
+            line="27"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="UnsafeDynamicallyLoadedCode"
+        severity="Warning"
+        message="Dynamically loading code using `load` is risky, please use `loadLibrary` instead when possible"
+        category="Security"
+        priority="4"
+        summary="`load` used to dynamically load code"
+        explanation="Dynamically loading code from locations other than the application&apos;s library directory or the Android platform&apos;s built-in library directories is dangerous, as there is an increased risk that the code could have been tampered with. Applications should use `loadLibrary` when possible, which provides increased assurance that libraries are loaded from one of these safer locations. Application developers should use the features of their development environment to place application native libraries into the lib directory of their compiled APKs."
+        errorLine1="                                System.load(System.getProperty(&quot;user.dir&quot;) + &quot;/libs/libmegajava.dylib&quot;);"
+        errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java"
+            line="30"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="DataExtractionRules"
+        severity="Warning"
+        message="The attribute `android:allowBackup` is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute `android:dataExtractionRules` specifying an `@xml` resource which configures cloud backups and device transfers on Android 12 and higher."
+        category="Security"
+        priority="3"
+        summary="Missing data extraction rules"
+        explanation="Before Android 12, the attributes `android:allowBackup` and `android:fullBackupContent` were used to configure all forms of backup, including cloud backups, device-to-device transfers and adb backup.&#xA;&#xA;In Android 12 and higher, these attributes have been deprecated and will only apply to cloud backups. You should instead use the attribute `android:dataExtractionRules`, specifying an `@xml` resource that configures which files to back up, for cloud backups and for device-to-device transfers, separately. If your `minSdkVersion` supports older versions, you&apos;ll still want to specify an `android:fullBackupContent` resource if the default behavior is not right for your app."
+        url="https://developer.android.com/about/versions/12/backup-restore#xml-changes"
+        urls="https://developer.android.com/about/versions/12/backup-restore#xml-changes,https://goo.gle/DataExtractionRules"
+        errorLine1="        android:allowBackup=&quot;false&quot;"
+        errorLine2="                             ~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/AndroidManifest.xml"
+            line="13"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        severity="Warning"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        category="Performance"
+        priority="8"
+        summary="Invalidating All RecyclerView Data"
+        explanation="The `RecyclerView` adapter&apos;s `onNotifyDataSetChanged` method does not specify what about the data set has changed, forcing any observers to assume that all existing items and structure may no longer be valid. `LayoutManager`s will be forced to fully rebind and relayout all visible views."
+        errorLine1="        adapter.notifyDataSetChanged();"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="582"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        severity="Warning"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        category="Performance"
+        priority="8"
+        summary="Invalidating All RecyclerView Data"
+        explanation="The `RecyclerView` adapter&apos;s `onNotifyDataSetChanged` method does not specify what about the data set has changed, forcing any observers to assume that all existing items and structure may no longer be valid. `LayoutManager`s will be forced to fully rebind and relayout all visible views."
+        errorLine1="    private void filter(){if(search==null)return;String query=LibraryRules.normalize(search.getText().toString());shown.clear();for(Track track:tracks)if(LibraryRules.normalize(track.name).contains(query))shown.add(track);adapter.notifyDataSetChanged();if(empty!=null){empty.setText(&quot;No hay carpetas ni archivos multimedia que mostrar aquí.&quot;);empty.setVisibility(shown.isEmpty()?View.VISIBLE:View.GONE);}}"
+        errorLine2="                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java"
+            line="107"
+            column="223"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        severity="Warning"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        category="Performance"
+        priority="8"
+        summary="Invalidating All RecyclerView Data"
+        explanation="The `RecyclerView` adapter&apos;s `onNotifyDataSetChanged` method does not specify what about the data set has changed, forcing any observers to assume that all existing items and structure may no longer be valid. `LayoutManager`s will be forced to fully rebind and relayout all visible views."
+        errorLine1="        adapter.notifyDataSetChanged();empty.setVisibility(items.isEmpty()?View.VISIBLE:View.GONE);updateStatus();"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java"
+            line="56"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ClickableViewAccessibility"
+        severity="Warning"
+        message="Custom view ``TextView`` has `setOnTouchListener` called on it but does not override `performClick`"
+        category="Accessibility"
+        priority="6"
+        summary="Accessibility in Custom Views"
+        explanation="If a `View` that overrides `onTouchEvent` or uses an `OnTouchListener` does not also implement `performClick` and call it when clicks are detected, the `View` may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in `View#performClick` as some accessibility services invoke `performClick` when a click action should occur."
+        errorLine1="            h.handle.setText(&quot;≡&quot;);h.handle.setContentDescription(&quot;Mover &quot;+item.mediaMetadata.title);h.handle.setOnClickListener(v->options(h.getBindingAdapterPosition()));h.handle.setOnTouchListener((v,e)->{if(e.getActionMasked()==MotionEvent.ACTION_DOWN){touch.startDrag(h);return true;}if(e.getActionMasked()==MotionEvent.ACTION_UP)v.performClick();return true;});"
+        errorLine2="                                                                                                                                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java"
+            line="135"
+            column="172"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        if(!controller.getAvailableSessionCommands().contains(command)){status.setText(&quot;El ecualizador todavía no está disponible.&quot;);return;}"
+        errorLine2="                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java"
+            line="41"
+            column="88"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        future.addListener(()->{if(isDestroyed()||controller!=current)return;pending=false;try{SessionResult result=future.get();if(result.resultCode==SessionResult.RESULT_SUCCESS)render(result.extras);else status.setText(&quot;No se pudo aplicar el ecualizador.&quot;);}catch(Exception e){status.setText(&quot;No se pudo consultar el ecualizador. Vuelve a abrir esta pantalla.&quot;);}if(!queued.isEmpty())request(queued.remove());},ContextCompat.getMainExecutor(this));"
+        errorLine2="                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java"
+            line="43"
+            column="223"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        future.addListener(()->{if(isDestroyed()||controller!=current)return;pending=false;try{SessionResult result=future.get();if(result.resultCode==SessionResult.RESULT_SUCCESS)render(result.extras);else status.setText(&quot;No se pudo aplicar el ecualizador.&quot;);}catch(Exception e){status.setText(&quot;No se pudo consultar el ecualizador. Vuelve a abrir esta pantalla.&quot;);}if(!queued.isEmpty())request(queued.remove());},ContextCompat.getMainExecutor(this));"
+        errorLine2="                                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java"
+            line="43"
+            column="296"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        androidx.appcompat.widget.SwitchCompat power=new androidx.appcompat.widget.SwitchCompat(this);power.setText(&quot;Ecualizador&quot;);power.setTextColor(INK);power.setTextSize(16);power.setChecked(enabled);power.setEnabled(available);power.setPadding(0,dp(this,10),0,dp(this,14));settings.addView(power,fill(dp(this,58)));"
+        errorLine2="                                                                                                                    ~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java"
+            line="49"
+            column="117"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                public void onProgressChanged(SeekBar s,int value,boolean user){label.setText(frequency+&quot;  ·  &quot;+gain(min+value));}"
+        errorLine2="                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java"
+            line="63"
+            column="95"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    breadcrumb.setText((videos?&quot;Videos · &quot;:&quot;Canciones · &quot;)+result.matching);"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="395"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    if(running)libraryStatus.setText(catalogStatus.found+&quot; archivos multimedia encontrados · &quot;+catalogStatus.folders+&quot; carpetas revisadas\n&quot;+catalogStatus.pending+&quot; ubicaciones pendientes&quot;);"
+        errorLine2="                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="403"
+            column="54"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    if(running)libraryStatus.setText(catalogStatus.found+&quot; archivos multimedia encontrados · &quot;+catalogStatus.folders+&quot; carpetas revisadas\n&quot;+catalogStatus.pending+&quot; ubicaciones pendientes&quot;);"
+        errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="403"
+            column="74"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    if(running)libraryStatus.setText(catalogStatus.found+&quot; archivos multimedia encontrados · &quot;+catalogStatus.folders+&quot; carpetas revisadas\n&quot;+catalogStatus.pending+&quot; ubicaciones pendientes&quot;);"
+        errorLine2="                                                                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="403"
+            column="180"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    else if(catalogStatus.failed>0)libraryStatus.setText(catalogStatus.total+&quot; archivos multimedia · &quot;+catalogStatus.failed+&quot; ubicaciones sin acceso\nToca aquí para ver el detalle.&quot;);"
+        errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="404"
+            column="74"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    else if(catalogStatus.failed>0)libraryStatus.setText(catalogStatus.total+&quot; archivos multimedia · &quot;+catalogStatus.failed+&quot; ubicaciones sin acceso\nToca aquí para ver el detalle.&quot;);"
+        errorLine2="                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="404"
+            column="94"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    else if(catalogStatus.resumable())libraryStatus.setText(&quot;Pausado · &quot;+catalogStatus.found+&quot; archivos multimedia encontrados\n&quot;+(catalogStatus.message.isEmpty()?&quot;El avance está guardado; pulsa Continuar.&quot;:catalogStatus.message));"
+        errorLine2="                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="405"
+            column="77"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    else if(catalogStatus.resumable())libraryStatus.setText(&quot;Pausado · &quot;+catalogStatus.found+&quot; archivos multimedia encontrados\n&quot;+(catalogStatus.message.isEmpty()?&quot;El avance está guardado; pulsa Continuar.&quot;:catalogStatus.message));"
+        errorLine2="                                                                            ~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="405"
+            column="77"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    else if(&quot;complete&quot;.equals(catalogStatus.phase))libraryStatus.setText(catalogStatus.total+&quot; archivos multimedia · Escaneo completado\nActualizado: &quot;+android.text.format.DateFormat.format(&quot;dd/MM HH:mm&quot;,catalogStatus.lastComplete));"
+        errorLine2="                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="406"
+            column="90"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    else libraryStatus.setText(&quot;Reúne la música y los videos de Drive y MEGA, incluidas las carpetas compartidas.&quot;);"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="407"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="            scanLibrary.setText(&quot;Pausando…&quot;);scanLibrary.setEnabled(false);return;"
+        errorLine2="                                ~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="436"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="            catalogStatus.phase=&quot;scanning&quot;;lastLibraryPoll=0;scanLibrary.setText(&quot;Preparando…&quot;);"
+        errorLine2="                                                                                 ~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="449"
+            column="82"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        if (!append) { tracks.clear(); refreshRows(); empty.setText(&quot;Buscando tu música…&quot;); empty.setVisibility(View.VISIBLE); nextPage = &quot;&quot;; }"
+        errorLine2="                                                                    ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="502"
+            column="69"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    if (tracks.isEmpty()) { empty.setText(message + &quot;\n\nPulsa ↻ para reintentar.&quot;); empty.setVisibility(View.VISIBLE); }"
+        errorLine2="                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="523"
+            column="59"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        breadcrumb.setText(&quot;Mis listas&quot;); tracks.clear();"
+        errorLine2="                           ~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="549"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        empty.setText(&quot;Esta lista está vacía. Añade canciones desde el menú ⋮ de cada archivo.&quot;);"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="556"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                    location=new Location(&quot;root&quot;,&quot;Mi Drive&quot;,&quot;&quot;,false);breadcrumb.setText(&quot;Mi Drive&quot;);showDisconnected();break;"
+        errorLine2="                                                                                         ~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="670"
+            column="90"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        breadcrumb.setText(&quot;Archivos seleccionados&quot;); tracks.clear();"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java"
+            line="691"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        tracks.clear();filter();empty.setText(&quot;Leyendo carpeta…&quot;);"
+        errorLine2="                                              ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java"
+            line="103"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="    private void filter(){if(search==null)return;String query=LibraryRules.normalize(search.getText().toString());shown.clear();for(Track track:tracks)if(LibraryRules.normalize(track.name).contains(query))shown.add(track);adapter.notifyDataSetChanged();if(empty!=null){empty.setText(&quot;No hay carpetas ni archivos multimedia que mostrar aquí.&quot;);empty.setVisibility(shown.isEmpty()?View.VISIBLE:View.GONE);}}"
+        errorLine2="                                                                                                                                                                                                                                                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java"
+            line="107"
+            column="284"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="                try{ContextCompat.startForegroundService(this,scanIntent);scanStatus.setText(&quot;Preparando catálogo…&quot;);lastPoll=0;}catch(RuntimeException e){toast(&quot;Android no pudo iniciar el escaneo. Vuelve a intentarlo con la app abierta.&quot;);}"
+        errorLine2="                                                                                             ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java"
+            line="124"
+            column="94"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        @Override public void onBindViewHolder(@NonNull Holder holder,int position){Track track=shown.get(position);holder.title.setText((track.folder?&quot;▱  &quot;:track.isVideo()?&quot;▶  &quot;:&quot;♪  &quot;)+track.name);holder.detail.setText(track.folder?&quot;Carpeta&quot;:track.subtitle());holder.itemView.setOnClickListener(v->select(track));holder.options.setVisibility(track.folder?View.INVISIBLE:View.VISIBLE);holder.options.setOnClickListener(v->trackMenu(track));}"
+        errorLine2="                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java"
+            line="141"
+            column="138"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        state.setText(status+(controller.getMediaItemCount()>0?&quot; · &quot;+(controller.getCurrentMediaItemIndex()+1)+&quot; / &quot;+controller.getMediaItemCount():&quot;&quot;));"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/PlayerActivity.java"
+            line="86"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        count.setText(items.size()+&quot; canciones&quot;+(playlist==null?&quot; · Se guarda automáticamente&quot;:&quot; · Orden guardado en esta lista&quot;));"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java"
+            line="61"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        count.setText(items.size()+&quot; canciones&quot;+(playlist==null?&quot; · Se guarda automáticamente&quot;:&quot; · Orden guardado en esta lista&quot;));"
+        errorLine2="                                   ~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java"
+            line="61"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        boolean random=playlist==null&amp;&amp;controller!=null&amp;&amp;controller.getShuffleModeEnabled();manual.setVisibility(random?View.VISIBLE:View.GONE);manual.setText(&quot;Aleatorio activo · Usar el orden de la lista&quot;);"
+        errorLine2="                                                                                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java"
+            line="62"
+            column="160"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="            public void onProgressChanged(SeekBar s,int p,boolean user){if(user&amp;&amp;controller!=null&amp;&amp;controller.getDuration()>0)times.setText(DriveRules.time(controller.getDuration()*p/10000)+&quot; / &quot;+DriveRules.time(controller.getDuration()));}"
+        errorLine2="                                                                                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/VideoActivity.java"
+            line="91"
+            column="141"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        severity="Warning"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        category="Internationalization"
+        priority="6"
+        summary="TextView Internationalization"
+        explanation="When calling `TextView#setText`&#xA;* Never call `Number#toString()` to format numbers; it will not handle fraction separators and locale-specific digits properly. Consider using `String#format` with proper format specifications (`%d` or `%f`) instead.&#xA;* Do not pass a string literal (e.g. &quot;Hello&quot;) to display text. Hardcoded text can not be properly translated to other languages. Consider using Android resource strings instead.&#xA;* Do not build messages by concatenating text chunks. Such messages can not be properly translated."
+        url="https://developer.android.com/guide/topics/resources/localization.html"
+        urls="https://developer.android.com/guide/topics/resources/localization.html"
+        errorLine1="        if(!seeking){seek.setProgress(d>0?(int)Math.min(10000,p*10000/d):0);times.setText(DriveRules.time(p)+&quot; / &quot;+(d>0?DriveRules.time(d):&quot;—&quot;));}"
+        errorLine2="                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/VideoActivity.java"
+            line="164"
+            column="91"/>
+    </issue>
+
+</issues>

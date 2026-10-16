@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cl.fernando.nubemusica.DriveRulesTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-09-29T12:10:30.513Z" hostname="c616cd1d5a22" time="0.003">
+  <properties/>
+  <testcase name="personalFolderIsNotReplacedByGlobalSearch" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <testcase name="invalidFolderIdCannotChangeQuery" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.001"/>
+  <testcase name="originalAudioMimeIsPreserved" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <testcase name="headersRejectLineBreaksAndPathSeparators" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <testcase name="sharedViewDoesNotAddMyDriveParentRestriction" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <testcase name="longMixesDisplayHoursWithoutWrappingMinutes" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <testcase name="namesWithQuotesAndSlashesAreEscaped" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <testcase name="titleKeepsPeriodsInsideArtistNames" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <testcase name="audioDetectionHandlesUppercaseAndMissingMime" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

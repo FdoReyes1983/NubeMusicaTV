@@ -1,0 +1,12 @@
+<resources>
+    <style name="Theme.NubeMusica" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#69E1BF</item>
+        <item name="colorPrimaryVariant">#245448</item>
+        <item name="colorOnPrimary">#071D17</item>
+        <item name="colorSecondary">#69E1BF</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">#0C1322</item>
+        <item name="android:colorAccent">#69E1BF</item>
+    </style>
+</resources>

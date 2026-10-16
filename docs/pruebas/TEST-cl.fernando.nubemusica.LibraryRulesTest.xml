@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cl.fernando.nubemusica.LibraryRulesTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-09-29T12:10:30.517Z" hostname="c616cd1d5a22" time="0.005">
+  <properties/>
+  <testcase name="mergedOriginsRemainRecognizable" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.001"/>
+  <testcase name="invalidSortFallsBackToStableTitleOrder" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.0"/>
+  <testcase name="searchMatchesAccentsAndUppercaseNames" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.004"/>
+  <testcase name="percentUnderscoreAndBackslashAreLiteralSearchCharacters" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cl.fernando.nubemusica.CatalogScannerTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-09-30T09:10:41.247Z" hostname="80facbd8326b" time="0.025">
+  <properties/>
+  <testcase name="gathersOwnNestedSharedDirectAndSharedDriveAudio" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.003"/>
+  <testcase name="repeatedPageTokenCannotLoopForever" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="traversesEmptyIntermediatePageAndMoreThanThousandSongs" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.014"/>
+  <testcase name="resolvesShortcutsUsesTargetNamesAndBreaksFolderCycles" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="expiredCursorRestartsListingWithoutDuplicateSongs" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="networkFailurePreservesCommittedPageAndResumeCursor" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="gathersVideoFromNestedAndSharedLocations" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="pausesBeforeCommitThenResumesSamePage" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="incompleteResultDoesNotAdvanceOrCommit" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="repeatedExpiredCursorsStopWithCheckpoint" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="audioExtensionsAreFoundWithoutTrustingGenericMimeType" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="inaccessibleChildDoesNotDiscardOtherDiscoveries" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="inaccessibleRootCollectionIsNotReportedAsEmptySuccess" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

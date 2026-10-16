@@ -1,0 +1,199 @@
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/AndroidManifest.xml:36: Warning: Exported service does not require permission [ExportedService]
+        <service
+         ~~~~~~~
+
+   Explanation for issues of type "ExportedService":
+   Exported services (services which either set exported=true or contain an
+   intent-filter and do not specify exported=false) should define a permission
+   that an entity must have in order to launch the service or bind to it.
+   Without this, any application can use this service.
+
+   https://goo.gle/ExportedService
+
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java:18: Warning: Dynamically loading code using load is risky, please use loadLibrary instead when possible [UnsafeDynamicallyLoadedCode]
+                System.load(System.getProperty("user.dir") + "/libmega.so");
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java:21: Warning: Dynamically loading code using load is risky, please use loadLibrary instead when possible [UnsafeDynamicallyLoadedCode]
+                    System.load(System.getProperty("user.dir") + "/libs/libmegajava.so");
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java:24: Warning: Dynamically loading code using load is risky, please use loadLibrary instead when possible [UnsafeDynamicallyLoadedCode]
+                        System.load(System.getProperty("user.dir") + "/libs/mega.dll");
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java:27: Warning: Dynamically loading code using load is risky, please use loadLibrary instead when possible [UnsafeDynamicallyLoadedCode]
+                            System.load(System.getProperty("user.dir") + "/libmega.dylib");
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/nz/mega/sdk/megaJNI.java:30: Warning: Dynamically loading code using load is risky, please use loadLibrary instead when possible [UnsafeDynamicallyLoadedCode]
+                                System.load(System.getProperty("user.dir") + "/libs/libmegajava.dylib");
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnsafeDynamicallyLoadedCode":
+   Dynamically loading code from locations other than the application's
+   library directory or the Android platform's built-in library directories is
+   dangerous, as there is an increased risk that the code could have been
+   tampered with. Applications should use loadLibrary when possible, which
+   provides increased assurance that libraries are loaded from one of these
+   safer locations. Application developers should use the features of their
+   development environment to place application native libraries into the lib
+   directory of their compiled APKs.
+
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/AndroidManifest.xml:13: Warning: The attribute android:allowBackup is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute android:dataExtractionRules specifying an @xml resource which configures cloud backups and device transfers on Android 12 and higher. [DataExtractionRules]
+        android:allowBackup="false"
+                             ~~~~~
+
+   Explanation for issues of type "DataExtractionRules":
+   Before Android 12, the attributes android:allowBackup and
+   android:fullBackupContent were used to configure all forms of backup,
+   including cloud backups, device-to-device transfers and adb backup.
+
+   In Android 12 and higher, these attributes have been deprecated and will
+   only apply to cloud backups. You should instead use the attribute
+   android:dataExtractionRules, specifying an @xml resource that configures
+   which files to back up, for cloud backups and for device-to-device
+   transfers, separately. If your minSdkVersion supports older versions,
+   you'll still want to specify an android:fullBackupContent resource if the
+   default behavior is not right for your app.
+
+   https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   https://goo.gle/DataExtractionRules
+
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:582: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+        adapter.notifyDataSetChanged();
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java:107: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    private void filter(){if(search==null)return;String query=LibraryRules.normalize(search.getText().toString());shown.clear();for(Track track:tracks)if(LibraryRules.normalize(track.name).contains(query))shown.add(track);adapter.notifyDataSetChanged();if(empty!=null){empty.setText("No hay carpetas ni archivos multimedia que mostrar aquí.");empty.setVisibility(shown.isEmpty()?View.VISIBLE:View.GONE);}}
+                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java:56: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+        adapter.notifyDataSetChanged();empty.setVisibility(items.isEmpty()?View.VISIBLE:View.GONE);updateStatus();
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "NotifyDataSetChanged":
+   The RecyclerView adapter's onNotifyDataSetChanged method does not specify
+   what about the data set has changed, forcing any observers to assume that
+   all existing items and structure may no longer be valid. `LayoutManager`s
+   will be forced to fully rebind and relayout all visible views.
+
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java:135: Warning: Custom view `TextView` has setOnTouchListener called on it but does not override performClick [ClickableViewAccessibility]
+            h.handle.setText("≡");h.handle.setContentDescription("Mover "+item.mediaMetadata.title);h.handle.setOnClickListener(v->options(h.getBindingAdapterPosition()));h.handle.setOnTouchListener((v,e)->{if(e.getActionMasked()==MotionEvent.ACTION_DOWN){touch.startDrag(h);return true;}if(e.getActionMasked()==MotionEvent.ACTION_UP)v.performClick();return true;});
+                                                                                                                                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "ClickableViewAccessibility":
+   If a View that overrides onTouchEvent or uses an OnTouchListener does not
+   also implement performClick and call it when clicks are detected, the View
+   may not handle accessibility actions properly. Logic handling the click
+   actions should ideally be placed in View#performClick as some accessibility
+   services invoke performClick when a click action should occur.
+
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java:41: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        if(!controller.getAvailableSessionCommands().contains(command)){status.setText("El ecualizador todavía no está disponible.");return;}
+                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java:43: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        future.addListener(()->{if(isDestroyed()||controller!=current)return;pending=false;try{SessionResult result=future.get();if(result.resultCode==SessionResult.RESULT_SUCCESS)render(result.extras);else status.setText("No se pudo aplicar el ecualizador.");}catch(Exception e){status.setText("No se pudo consultar el ecualizador. Vuelve a abrir esta pantalla.");}if(!queued.isEmpty())request(queued.remove());},ContextCompat.getMainExecutor(this));
+                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java:43: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        future.addListener(()->{if(isDestroyed()||controller!=current)return;pending=false;try{SessionResult result=future.get();if(result.resultCode==SessionResult.RESULT_SUCCESS)render(result.extras);else status.setText("No se pudo aplicar el ecualizador.");}catch(Exception e){status.setText("No se pudo consultar el ecualizador. Vuelve a abrir esta pantalla.");}if(!queued.isEmpty())request(queued.remove());},ContextCompat.getMainExecutor(this));
+                                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java:49: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        androidx.appcompat.widget.SwitchCompat power=new androidx.appcompat.widget.SwitchCompat(this);power.setText("Ecualizador");power.setTextColor(INK);power.setTextSize(16);power.setChecked(enabled);power.setEnabled(available);power.setPadding(0,dp(this,10),0,dp(this,14));settings.addView(power,fill(dp(this,58)));
+                                                                                                                    ~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/EqualizerActivity.java:63: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                public void onProgressChanged(SeekBar s,int value,boolean user){label.setText(frequency+"  ·  "+gain(min+value));}
+                                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:395: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    breadcrumb.setText((videos?"Videos · ":"Canciones · ")+result.matching);
+                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:403: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    if(running)libraryStatus.setText(catalogStatus.found+" archivos multimedia encontrados · "+catalogStatus.folders+" carpetas revisadas\n"+catalogStatus.pending+" ubicaciones pendientes");
+                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:403: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                    if(running)libraryStatus.setText(catalogStatus.found+" archivos multimedia encontrados · "+catalogStatus.folders+" carpetas revisadas\n"+catalogStatus.pending+" ubicaciones pendientes");
+                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:403: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                    if(running)libraryStatus.setText(catalogStatus.found+" archivos multimedia encontrados · "+catalogStatus.folders+" carpetas revisadas\n"+catalogStatus.pending+" ubicaciones pendientes");
+                                                                                                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:404: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    else if(catalogStatus.failed>0)libraryStatus.setText(catalogStatus.total+" archivos multimedia · "+catalogStatus.failed+" ubicaciones sin acceso\nToca aquí para ver el detalle.");
+                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:404: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                    else if(catalogStatus.failed>0)libraryStatus.setText(catalogStatus.total+" archivos multimedia · "+catalogStatus.failed+" ubicaciones sin acceso\nToca aquí para ver el detalle.");
+                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:405: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    else if(catalogStatus.resumable())libraryStatus.setText("Pausado · "+catalogStatus.found+" archivos multimedia encontrados\n"+(catalogStatus.message.isEmpty()?"El avance está guardado; pulsa Continuar.":catalogStatus.message));
+                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:405: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                    else if(catalogStatus.resumable())libraryStatus.setText("Pausado · "+catalogStatus.found+" archivos multimedia encontrados\n"+(catalogStatus.message.isEmpty()?"El avance está guardado; pulsa Continuar.":catalogStatus.message));
+                                                                            ~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:406: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    else if("complete".equals(catalogStatus.phase))libraryStatus.setText(catalogStatus.total+" archivos multimedia · Escaneo completado\nActualizado: "+android.text.format.DateFormat.format("dd/MM HH:mm",catalogStatus.lastComplete));
+                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:407: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                    else libraryStatus.setText("Reúne la música y los videos de Drive y MEGA, incluidas las carpetas compartidas.");
+                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:436: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            scanLibrary.setText("Pausando…");scanLibrary.setEnabled(false);return;
+                                ~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:449: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            catalogStatus.phase="scanning";lastLibraryPoll=0;scanLibrary.setText("Preparando…");
+                                                                                 ~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:502: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        if (!append) { tracks.clear(); refreshRows(); empty.setText("Buscando tu música…"); empty.setVisibility(View.VISIBLE); nextPage = ""; }
+                                                                    ~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:523: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                    if (tracks.isEmpty()) { empty.setText(message + "\n\nPulsa ↻ para reintentar."); empty.setVisibility(View.VISIBLE); }
+                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:549: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        breadcrumb.setText("Mis listas"); tracks.clear();
+                           ~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:556: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        empty.setText("Esta lista está vacía. Añade canciones desde el menú ⋮ de cada archivo.");
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:670: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                    location=new Location("root","Mi Drive","",false);breadcrumb.setText("Mi Drive");showDisconnected();break;
+                                                                                         ~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MainActivity.java:691: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        breadcrumb.setText("Archivos seleccionados"); tracks.clear();
+                           ~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java:103: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        tracks.clear();filter();empty.setText("Leyendo carpeta…");
+                                              ~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java:107: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+    private void filter(){if(search==null)return;String query=LibraryRules.normalize(search.getText().toString());shown.clear();for(Track track:tracks)if(LibraryRules.normalize(track.name).contains(query))shown.add(track);adapter.notifyDataSetChanged();if(empty!=null){empty.setText("No hay carpetas ni archivos multimedia que mostrar aquí.");empty.setVisibility(shown.isEmpty()?View.VISIBLE:View.GONE);}}
+                                                                                                                                                                                                                                                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java:124: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                try{ContextCompat.startForegroundService(this,scanIntent);scanStatus.setText("Preparando catálogo…");lastPoll=0;}catch(RuntimeException e){toast("Android no pudo iniciar el escaneo. Vuelve a intentarlo con la app abierta.");}
+                                                                                             ~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/MegaActivity.java:141: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        @Override public void onBindViewHolder(@NonNull Holder holder,int position){Track track=shown.get(position);holder.title.setText((track.folder?"▱  ":track.isVideo()?"▶  ":"♪  ")+track.name);holder.detail.setText(track.folder?"Carpeta":track.subtitle());holder.itemView.setOnClickListener(v->select(track));holder.options.setVisibility(track.folder?View.INVISIBLE:View.VISIBLE);holder.options.setOnClickListener(v->trackMenu(track));}
+                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/PlayerActivity.java:86: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        state.setText(status+(controller.getMediaItemCount()>0?" · "+(controller.getCurrentMediaItemIndex()+1)+" / "+controller.getMediaItemCount():""));
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java:61: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        count.setText(items.size()+" canciones"+(playlist==null?" · Se guarda automáticamente":" · Orden guardado en esta lista"));
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java:61: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        count.setText(items.size()+" canciones"+(playlist==null?" · Se guarda automáticamente":" · Orden guardado en esta lista"));
+                                   ~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/QueueActivity.java:62: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        boolean random=playlist==null&&controller!=null&&controller.getShuffleModeEnabled();manual.setVisibility(random?View.VISIBLE:View.GONE);manual.setText("Aleatorio activo · Usar el orden de la lista");
+                                                                                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/VideoActivity.java:91: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+            public void onProgressChanged(SeekBar s,int p,boolean user){if(user&&controller!=null&&controller.getDuration()>0)times.setText(DriveRules.time(controller.getDuration()*p/10000)+" / "+DriveRules.time(controller.getDuration()));}
+                                                                                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/5bc3f3820c02/work-v05/nube-musica/app/src/main/java/cl/fernando/nubemusica/VideoActivity.java:164: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        if(!seeking){seek.setProgress(d>0?(int)Math.min(10000,p*10000/d):0);times.setText(DriveRules.time(p)+" / "+(d>0?DriveRules.time(d):"—"));}
+                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SetTextI18n":
+   When calling TextView#setText
+   * Never call Number#toString() to format numbers; it will not handle
+   fraction separators and locale-specific digits properly. Consider using
+   String#format with proper format specifications (%d or %f) instead.
+   * Do not pass a string literal (e.g. "Hello") to display text. Hardcoded
+   text can not be properly translated to other languages. Consider using
+   Android resource strings instead.
+   * Do not build messages by concatenating text chunks. Such messages can not
+   be properly translated.
+
+   https://developer.android.com/guide/topics/resources/localization.html
+
+0 errors, 44 warnings

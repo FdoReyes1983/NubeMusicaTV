@@ -1,0 +1,25 @@
+--- a/bindings/megaapi.i
++++ b/bindings/megaapi.i
+@@ -400,7 +400,22 @@
+ %}
+ #endif
+ 
++// Binary streaming: SWIG 4.5 otherwise converts arbitrary audio bytes to UTF-8 text.
+ %apply (char *STRING, size_t LENGTH) {(char *buffer, size_t size)};
++%typemap(jstype) (char *buffer, size_t size) "byte[]"
++%typemap(javain) (char *buffer, size_t size) "$javainput"
++%typemap(javadirectorin, descriptor="[B") (char *buffer, size_t size) "$jniinput"
++%typemap(directorin, descriptor="[B", noblock=1) (char *buffer, size_t size) {
++  $input = 0;
++  if ($1) {
++    $input = JCALL1(NewByteArray, jenv, (jsize)$2);
++    if (!$input) return $null;
++    JCALL4(SetByteArrayRegion, jenv, $input, 0, (jsize)$2, (jbyte *)$1);
++  }
++  Swig::LocalRefGuard $1_refguard(jenv, $input);
++}
++
++
+ 
+ #if SWIG_VERSION < 0x030012
+ %typemap(directorargout) (char *buffer, size_t size)

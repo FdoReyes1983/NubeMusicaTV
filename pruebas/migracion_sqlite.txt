@@ -1,0 +1,1 @@
+Se ejecutaron las sentencias SQL reales de la creación de 0.4.0 y la migración de 0.5.0 en SQLite. Resultado: canción y fecha de incorporación conservadas; media_type añadido con valor 0; tareas antiguas reiniciadas; estado idle. La migración Android debe confirmarse en el teléfono.

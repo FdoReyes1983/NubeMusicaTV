@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cl.fernando.nubemusica.MegaPrivateFilesTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-09-30T09:10:41.291Z" hostname="80facbd8326b" time="0.007">
+  <properties/>
+  <testcase name="nonCreatingLookupDoesNotCreateAnything" classname="cl.fernando.nubemusica.MegaPrivateFilesTest" time="0.003"/>
+  <testcase name="createsNestedSdkCacheFilesAndReadsMetadata" classname="cl.fernando.nubemusica.MegaPrivateFilesTest" time="0.002"/>
+  <testcase name="renameAndDeleteAreLimitedToPrivateFiles" classname="cl.fernando.nubemusica.MegaPrivateFilesTest" time="0.001"/>
+  <testcase name="cannotEscapePrivateRootOrFollowOutsideSymlinks" classname="cl.fernando.nubemusica.MegaPrivateFilesTest" time="0.0"/>
+  <testcase name="neverRecursivelyDeletesDirectories" classname="cl.fernando.nubemusica.MegaPrivateFilesTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

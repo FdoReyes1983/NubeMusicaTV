@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cl.fernando.nubemusica.QueueRulesTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-30T09:10:41.306Z" hostname="80facbd8326b" time="0.01">
+  <properties/>
+  <testcase name="playNextKeepsThePlayingOccurrenceAndPlacesSelectedAfterIt" classname="cl.fernando.nubemusica.QueueRulesTest" time="0.009"/>
+  <testcase name="storedEqualizerGainFitsANarrowerDeviceRange" classname="cl.fernando.nubemusica.QueueRulesTest" time="0.0"/>
+  <testcase name="savedOrderRejectsLostOrDuplicatedOccurrences" classname="cl.fernando.nubemusica.QueueRulesTest" time="0.001"/>
+  <testcase name="savedOrderAcceptsMovesWithRepeatedFiles" classname="cl.fernando.nubemusica.QueueRulesTest" time="0.0"/>
+  <testcase name="savedOrderAllowsEmptyPlaylist" classname="cl.fernando.nubemusica.QueueRulesTest" time="0.0"/>
+  <testcase name="nextRejectsStaleIndexesAndEmptyQueue" classname="cl.fernando.nubemusica.QueueRulesTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

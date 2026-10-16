@@ -1,0 +1,8 @@
+{
+  "sdk": "10.19.0",
+  "jni_methods_checked": 2316,
+  "missing_exports": [],
+  "binary_stream_callback": "byte[]; JNI [B",
+  "elf_load_alignment_minimum": 16384,
+  "runtime_test_on_android": false
+}

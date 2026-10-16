@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cl.fernando.nubemusica.CatalogScannerTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-09-29T12:10:30.481Z" hostname="c616cd1d5a22" time="0.03">
+  <properties/>
+  <testcase name="gathersOwnNestedSharedDirectAndSharedDriveAudio" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.004"/>
+  <testcase name="repeatedPageTokenCannotLoopForever" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="traversesEmptyIntermediatePageAndMoreThanThousandSongs" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.016"/>
+  <testcase name="resolvesShortcutsUsesTargetNamesAndBreaksFolderCycles" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="expiredCursorRestartsListingWithoutDuplicateSongs" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="networkFailurePreservesCommittedPageAndResumeCursor" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="pausesBeforeCommitThenResumesSamePage" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="incompleteResultDoesNotAdvanceOrCommit" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="repeatedExpiredCursorsStopWithCheckpoint" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="audioExtensionsAreFoundWithoutTrustingGenericMimeType" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <testcase name="inaccessibleChildDoesNotDiscardOtherDiscoveries" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0"/>
+  <testcase name="inaccessibleRootCollectionIsNotReportedAsEmptySuccess" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

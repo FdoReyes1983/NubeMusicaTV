@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Nube Musica Development, O=Personal, C=CL
+Signer #1 certificate SHA-256 digest: 774f194c25f25d5b70d87857b0bb796531d8243d4359a2bc3e50e3b68cb5194d
+Signer #1 certificate SHA-1 digest: 5b55d0a65dd3111d0bb715fcea689ab460ad521a
+Signer #1 certificate MD5 digest: 847f5007f36f9d31f2bb78ed02f0d5c9
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 2048
+Signer #1 public key SHA-256 digest: 7c087b8c3f65b0314b236ffe19f6066012fff54330ed88258c4216c2cc0d3232
+Signer #1 public key SHA-1 digest: d8a2919fe45edf9f898c05d73586e4cc61e17467
+Signer #1 public key MD5 digest: 4a991281d3b89ad3fbdb70b4ff2a7bc8

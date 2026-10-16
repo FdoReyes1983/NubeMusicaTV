@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites><testsuite name="cl.fernando.nubemusica.CatalogScannerTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:49:48.493Z" hostname="fd166b717dd4" time="0.023">
+  <properties />
+  <testcase name="gathersOwnNestedSharedDirectAndSharedDriveAudio" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.003" />
+  <testcase name="repeatedPageTokenCannotLoopForever" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0" />
+  <testcase name="traversesEmptyIntermediatePageAndMoreThanThousandSongs" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.014" />
+  <testcase name="resolvesShortcutsUsesTargetNamesAndBreaksFolderCycles" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0" />
+  <testcase name="expiredCursorRestartsListingWithoutDuplicateSongs" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001" />
+  <testcase name="networkFailurePreservesCommittedPageAndResumeCursor" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0" />
+  <testcase name="pausesBeforeCommitThenResumesSamePage" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001" />
+  <testcase name="incompleteResultDoesNotAdvanceOrCommit" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0" />
+  <testcase name="repeatedExpiredCursorsStopWithCheckpoint" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001" />
+  <testcase name="audioExtensionsAreFoundWithoutTrustingGenericMimeType" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0" />
+  <testcase name="inaccessibleChildDoesNotDiscardOtherDiscoveries" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.0" />
+  <testcase name="inaccessibleRootCollectionIsNotReportedAsEmptySuccess" classname="cl.fernando.nubemusica.CatalogScannerTest" time="0.001" />
+  <system-out />
+  <system-err />
+</testsuite><testsuite name="cl.fernando.nubemusica.DriveRulesTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:49:48.519Z" hostname="fd166b717dd4" time="0.003">
+  <properties />
+  <testcase name="personalFolderIsNotReplacedByGlobalSearch" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0" />
+  <testcase name="invalidFolderIdCannotChangeQuery" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.001" />
+  <testcase name="originalAudioMimeIsPreserved" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0" />
+  <testcase name="headersRejectLineBreaksAndPathSeparators" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.001" />
+  <testcase name="sharedViewDoesNotAddMyDriveParentRestriction" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0" />
+  <testcase name="longMixesDisplayHoursWithoutWrappingMinutes" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.001" />
+  <testcase name="namesWithQuotesAndSlashesAreEscaped" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0" />
+  <testcase name="titleKeepsPeriodsInsideArtistNames" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0" />
+  <testcase name="audioDetectionHandlesUppercaseAndMissingMime" classname="cl.fernando.nubemusica.DriveRulesTest" time="0.0" />
+  <system-out />
+  <system-err />
+</testsuite><testsuite name="cl.fernando.nubemusica.LibraryRulesTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:49:48.524Z" hostname="fd166b717dd4" time="0.004">
+  <properties />
+  <testcase name="mergedOriginsRemainRecognizable" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.0" />
+  <testcase name="invalidSortFallsBackToStableTitleOrder" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.0" />
+  <testcase name="searchMatchesAccentsAndUppercaseNames" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.003" />
+  <testcase name="percentUnderscoreAndBackslashAreLiteralSearchCharacters" classname="cl.fernando.nubemusica.LibraryRulesTest" time="0.0" />
+  <system-out />
+  <system-err />
+</testsuite></testsuites>
