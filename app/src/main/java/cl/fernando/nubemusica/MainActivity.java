@@ -51,10 +51,17 @@ import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.identity.AuthorizationResult;
 import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -109,7 +116,10 @@ public final class MainActivity extends AppCompatActivity {
     private final Runnable librarySearch=() -> {if("library".equals(mode)){libraryLimit=200;loadLibrary(false);}};
     private ActivityResultLauncher<String> notificationPermission;
     private ActivityResultLauncher<IntentSenderRequest> authorization;
+    private ActivityResultLauncher<Intent> tvGoogleSignIn;
+    private ActivityResultLauncher<Intent> tvGoogleRecovery;
     private ActivityResultLauncher<String[]> openAudio;
+    private String pendingTvEmail = "";
     private final Runnable ticker = new Runnable() {
         @Override public void run() {
             updatePlayer();
@@ -152,6 +162,35 @@ public final class MainActivity extends AppCompatActivity {
             try { authorized(Identity.getAuthorizationClient(this).getAuthorizationResultFromIntent(data)); }
             catch (Exception e) { showAuthError(e); }
         });
+
+        tvGoogleSignIn = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            connect.setEnabled(true);
+            Intent data = result.getData();
+            if (data == null) {
+                showTvAuthError("Google no devolvió una cuenta. Vuelve a intentarlo.");
+                return;
+            }
+            try {
+                GoogleSignInAccount googleAccount = GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException.class);
+                String email = googleAccount == null ? null : googleAccount.getEmail();
+                if (email == null || email.isEmpty()) {
+                    showTvAuthError("La cuenta seleccionada no entregó un correo válido.");
+                    return;
+                }
+                pendingTvEmail = email;
+                requestTvToken(email);
+            } catch (ApiException e) {
+                showTvAuthError("No se pudo seleccionar la cuenta de Google. Código: "
+                        + e.getStatusCode() + " (" + CommonStatusCodes.getStatusCodeString(e.getStatusCode()) + ").");
+            }
+        });
+
+        tvGoogleRecovery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            connect.setEnabled(true);
+            if (result.getResultCode() == RESULT_OK && !pendingTvEmail.isEmpty()) requestTvToken(pendingTvEmail);
+            else showTvAuthError("Google no completó el permiso de lectura de Drive.");
+        });
+
         openAudio = registerForActivityResult(new ActivityResultContracts.OpenMultipleDocuments(), this::openSelectedAudio);
         buildScreen();
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -279,6 +318,10 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void connectDrive() {
+        if (TvUi.isTv(this)) {
+            connectTvDrive();
+            return;
+        }
         connect.setEnabled(false);
         auth.authorize(this).addOnSuccessListener(this, result -> {
             if (result.hasResolution()) {
@@ -290,19 +333,95 @@ public final class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(this, error -> { connect.setEnabled(true); showAuthError(error); });
     }
 
+    private GoogleSignInOptions tvSignInOptions() {
+        return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(new Scope(AuthManager.SCOPE))
+                .build();
+    }
+
+    private void connectTvDrive() {
+        connect.setEnabled(false);
+        try {
+            GoogleSignInAccount previous = GoogleSignIn.getLastSignedInAccount(this);
+            Scope driveScope = new Scope(AuthManager.SCOPE);
+            if (previous != null && previous.getEmail() != null && !previous.getEmail().isEmpty()
+                    && GoogleSignIn.hasPermissions(previous, driveScope)) {
+                pendingTvEmail = previous.getEmail();
+                requestTvToken(pendingTvEmail);
+                return;
+            }
+            GoogleSignInClient client = GoogleSignIn.getClient(this, tvSignInOptions());
+            tvGoogleSignIn.launch(client.getSignInIntent());
+        } catch (RuntimeException e) {
+            connect.setEnabled(true);
+            showTvAuthError("No se pudo abrir el selector de cuenta de Google en Android TV.");
+        }
+    }
+
+    private void requestTvToken(String email) {
+        connect.setEnabled(false);
+        io.execute(() -> {
+            try {
+                String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), email, AuthManager.LEGACY_SCOPE);
+                auth.acceptLegacyToken(accessToken, email);
+                pendingTvEmail = "";
+                runOnUiThread(() -> {
+                    if (!isDestroyed()) {
+                        connect.setEnabled(true);
+                        finishDriveConnection();
+                    }
+                });
+            } catch (UserRecoverableAuthException e) {
+                Intent recovery = e.getIntent();
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    connect.setEnabled(true);
+                    if (recovery != null) tvGoogleRecovery.launch(recovery);
+                    else showTvAuthError("Google necesita una confirmación adicional, pero no entregó una pantalla de autorización.");
+                });
+            } catch (Exception e) {
+                String detail = e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
+                runOnUiThread(() -> {
+                    if (!isDestroyed()) {
+                        connect.setEnabled(true);
+                        showTvAuthError("No se pudo obtener el permiso de lectura de Drive: " + detail);
+                    }
+                });
+            }
+        });
+    }
+
+    private void showTvAuthError(String message) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("No se pudo conectar Google Drive")
+                .setMessage(message + "\n\nEsta versión usa el flujo alternativo para Android TV. Comprueba que la cuenta esté añadida a la caja y también como usuario de prueba en Google Cloud.")
+                .setPositiveButton("Cerrar", null)
+                .setNeutralButton("Reintentar", (dialog, which) -> connectTvDrive())
+                .show();
+    }
+
     private void authorized(AuthorizationResult result) {
         try { auth.acceptInteractive(result); }
         catch (Exception e) { showAuthError(e); return; }
-        updateAccount();
-        mode = "drive"; history.clear(); location = new Location("root", "Mi Drive", "", false);
-        search.setText(""); load(false);
+        finishDriveConnection();
         long accountGeneration = auth.generation();
         io.execute(() -> {
             try {
-                String email = drive.accountEmail(); auth.rememberAccount(email, accountGeneration);
+                String email = drive.accountEmail();
+                auth.rememberAccount(email, accountGeneration);
                 runOnUiThread(() -> { if (!isDestroyed()) updateAccount(); });
             } catch (Exception ignored) { }
         });
+    }
+
+    private void finishDriveConnection() {
+        updateAccount();
+        mode = "drive";
+        history.clear();
+        location = new Location("root", "Mi Drive", "", false);
+        search.setText("");
+        load(false);
     }
 
     private void showAuthError(@Nullable Exception error) {
