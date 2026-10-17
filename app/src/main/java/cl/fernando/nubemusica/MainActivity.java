@@ -55,10 +55,8 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.identity.AuthorizationResult;
 import com.google.android.gms.auth.api.identity.Identity;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import android.accounts.AccountManager;
+import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
@@ -166,23 +164,21 @@ public final class MainActivity extends AppCompatActivity {
         tvGoogleSignIn = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             connect.setEnabled(true);
             Intent data = result.getData();
-            if (data == null) {
-                showTvAuthError("Google no devolvió una cuenta. Vuelve a intentarlo.");
+
+            if (result.getResultCode() != RESULT_OK || data == null) {
+                showTvAuthError("No se seleccionó una cuenta de Google.");
                 return;
             }
-            try {
-                GoogleSignInAccount googleAccount = GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException.class);
-                String email = googleAccount == null ? null : googleAccount.getEmail();
-                if (email == null || email.isEmpty()) {
-                    showTvAuthError("La cuenta seleccionada no entregó un correo válido.");
-                    return;
-                }
-                pendingTvEmail = email;
-                requestTvToken(email);
-            } catch (ApiException e) {
-                showTvAuthError("No se pudo seleccionar la cuenta de Google. Código: "
-                        + e.getStatusCode() + " (" + CommonStatusCodes.getStatusCodeString(e.getStatusCode()) + ").");
+
+            String email = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+
+            if (email == null || email.isEmpty()) {
+                showTvAuthError("La cuenta seleccionada no entregó un correo válido.");
+                return;
             }
+
+            pendingTvEmail = email;
+            requestTvToken(email);
         });
 
         tvGoogleRecovery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -333,26 +329,21 @@ public final class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(this, error -> { connect.setEnabled(true); showAuthError(error); });
     }
 
-    private GoogleSignInOptions tvSignInOptions() {
-        return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(new Scope(AuthManager.SCOPE))
-                .build();
-    }
-
     private void connectTvDrive() {
         connect.setEnabled(false);
+
         try {
-            GoogleSignInAccount previous = GoogleSignIn.getLastSignedInAccount(this);
-            Scope driveScope = new Scope(AuthManager.SCOPE);
-            if (previous != null && previous.getEmail() != null && !previous.getEmail().isEmpty()
-                    && GoogleSignIn.hasPermissions(previous, driveScope)) {
-                pendingTvEmail = previous.getEmail();
-                requestTvToken(pendingTvEmail);
-                return;
-            }
-            GoogleSignInClient client = GoogleSignIn.getClient(this, tvSignInOptions());
-            tvGoogleSignIn.launch(client.getSignInIntent());
+            Intent picker = AccountPicker.newChooseAccountIntent(
+                    null,
+                    null,
+                    new String[]{"com.google"},
+                    true,
+                    "Selecciona la cuenta de Google para Nube Música",
+                    null,
+                    null,
+                    null);
+
+            tvGoogleSignIn.launch(picker);
         } catch (RuntimeException e) {
             connect.setEnabled(true);
             showTvAuthError("No se pudo abrir el selector de cuenta de Google en Android TV.");
