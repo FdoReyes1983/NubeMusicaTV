@@ -1,8 +1,8 @@
+plugins { id 'com.android.application' }
+
 def tvClientId = System.getenv("GOOGLE_TV_CLIENT_ID") ?: ""
 def tvClientSecret = System.getenv("GOOGLE_TV_CLIENT_SECRET") ?: ""
 def escapeBuildConfig = { value -> value.replace("\\", "\\\\").replace('"', '\\"') }
-
-plugins { id 'com.android.application' }
 
 android {
     namespace 'cl.fernando.nubemusica'
