@@ -1,3 +1,7 @@
+def tvClientId = System.getenv("GOOGLE_TV_CLIENT_ID") ?: ""
+def tvClientSecret = System.getenv("GOOGLE_TV_CLIENT_SECRET") ?: ""
+def escapeBuildConfig = { value -> value.replace("\\", "\\\\").replace('"', '\\"') }
+
 plugins { id 'com.android.application' }
 
 android {
@@ -8,8 +12,13 @@ android {
         applicationId 'cl.fernando.nubemusica'
         minSdk 26
         targetSdk 36
-        versionCode 9
-        versionName '0.5.0-tv3-drive'
+        versionCode 10
+        versionName '0.5.0-tv4-device'
+        buildConfigField "String", "GOOGLE_TV_CLIENT_ID", "\"" + escapeBuildConfig(tvClientId) + "\""
+        buildConfigField "String", "GOOGLE_TV_CLIENT_SECRET", "\"" + escapeBuildConfig(tvClientSecret) + "\""
+    }
+    buildFeatures {
+        buildConfig true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

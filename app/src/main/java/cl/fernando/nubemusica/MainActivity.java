@@ -51,12 +51,8 @@ import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.identity.AuthorizationResult;
 import com.google.android.gms.auth.api.identity.Identity;
-import android.accounts.AccountManager;
-import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
@@ -114,10 +110,9 @@ public final class MainActivity extends AppCompatActivity {
     private final Runnable librarySearch=() -> {if("library".equals(mode)){libraryLimit=200;loadLibrary(false);}};
     private ActivityResultLauncher<String> notificationPermission;
     private ActivityResultLauncher<IntentSenderRequest> authorization;
-    private ActivityResultLauncher<Intent> tvGoogleSignIn;
-    private ActivityResultLauncher<Intent> tvGoogleRecovery;
     private ActivityResultLauncher<String[]> openAudio;
-    private String pendingTvEmail = "";
+    private volatile int tvAuthSerial;
+    private androidx.appcompat.app.AlertDialog tvDeviceDialog;
     private final Runnable ticker = new Runnable() {
         @Override public void run() {
             updatePlayer();
@@ -159,32 +154,6 @@ public final class MainActivity extends AppCompatActivity {
             // A canceled activity result can still carry Google's error. Always parse it.
             try { authorized(Identity.getAuthorizationClient(this).getAuthorizationResultFromIntent(data)); }
             catch (Exception e) { showAuthError(e); }
-        });
-
-        tvGoogleSignIn = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            connect.setEnabled(true);
-            Intent data = result.getData();
-
-            if (result.getResultCode() != RESULT_OK || data == null) {
-                showTvAuthError("No se seleccionó una cuenta de Google.");
-                return;
-            }
-
-            String email = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-
-            if (email == null || email.isEmpty()) {
-                showTvAuthError("La cuenta seleccionada no entregó un correo válido.");
-                return;
-            }
-
-            pendingTvEmail = email;
-            requestTvToken(email);
-        });
-
-        tvGoogleRecovery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            connect.setEnabled(true);
-            if (result.getResultCode() == RESULT_OK && !pendingTvEmail.isEmpty()) requestTvToken(pendingTvEmail);
-            else showTvAuthError("Google no completó el permiso de lectura de Drive.");
         });
 
         openAudio = registerForActivityResult(new ActivityResultContracts.OpenMultipleDocuments(), this::openSelectedAudio);
@@ -318,75 +287,127 @@ public final class MainActivity extends AppCompatActivity {
             connectTvDrive();
             return;
         }
+
         connect.setEnabled(false);
         auth.authorize(this).addOnSuccessListener(this, result -> {
             if (result.hasResolution()) {
-                if (result.getPendingIntent() == null) { connect.setEnabled(true); showAuthLaunchError(); return; }
+                if (result.getPendingIntent() == null) {
+                    connect.setEnabled(true);
+                    showAuthLaunchError();
+                    return;
+                }
                 try {
-                    authorization.launch(new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build());
-                } catch (RuntimeException error) { connect.setEnabled(true); showAuthLaunchError(); }
-            } else { connect.setEnabled(true); authorized(result); }
-        }).addOnFailureListener(this, error -> { connect.setEnabled(true); showAuthError(error); });
+                    authorization.launch(new IntentSenderRequest.Builder(
+                            result.getPendingIntent().getIntentSender()).build());
+                } catch (RuntimeException error) {
+                    connect.setEnabled(true);
+                    showAuthLaunchError();
+                }
+            } else {
+                connect.setEnabled(true);
+                authorized(result);
+            }
+        }).addOnFailureListener(this, error -> {
+            connect.setEnabled(true);
+            showAuthError(error);
+        });
     }
 
     private void connectTvDrive() {
-        connect.setEnabled(false);
-
-        try {
-            Intent picker = AccountPicker.newChooseAccountIntent(
-                    null,
-                    null,
-                    new String[]{"com.google"},
-                    true,
-                    "Selecciona la cuenta de Google para Nube Música",
-                    null,
-                    null,
-                    null);
-
-            tvGoogleSignIn.launch(picker);
-        } catch (RuntimeException e) {
-            connect.setEnabled(true);
-            showTvAuthError("No se pudo abrir el selector de cuenta de Google en Android TV.");
+        if (!TvDeviceOAuth.configured()) {
+            showTvDeviceError("La APK no contiene las credenciales del cliente OAuth «Nube Música TV». Configura los secrets GOOGLE_TV_CLIENT_ID y GOOGLE_TV_CLIENT_SECRET en GitHub y vuelve a compilar.");
+            return;
         }
-    }
 
-    private void requestTvToken(String email) {
         connect.setEnabled(false);
+        final int serial = ++tvAuthSerial;
+
         io.execute(() -> {
             try {
-                String accessToken = GoogleAuthUtil.getToken(getApplicationContext(), email, AuthManager.LEGACY_SCOPE);
-                auth.acceptLegacyToken(accessToken, email);
-                pendingTvEmail = "";
+                TvDeviceOAuth.DeviceCode code = TvDeviceOAuth.requestCode();
                 runOnUiThread(() -> {
-                    if (!isDestroyed()) {
-                        connect.setEnabled(true);
-                        finishDriveConnection();
-                    }
+                    if (!isDestroyed() && serial == tvAuthSerial) showTvDeviceCode(code, serial);
                 });
-            } catch (UserRecoverableAuthException e) {
-                Intent recovery = e.getIntent();
+
+                TvDeviceOAuth.Token token = TvDeviceOAuth.poll(
+                        code,
+                        () -> serial == tvAuthSerial && !Thread.currentThread().isInterrupted());
+
+                if (serial != tvAuthSerial) return;
+                auth.acceptDeviceToken(token);
+                long accountGeneration = auth.generation();
+                try {
+                    String email = drive.accountEmail();
+                    auth.rememberAccount(email, accountGeneration);
+                } catch (Exception ignored) { }
+
                 runOnUiThread(() -> {
-                    if (isDestroyed()) return;
+                    if (isDestroyed() || serial != tvAuthSerial) return;
+                    dismissTvDeviceDialog();
                     connect.setEnabled(true);
-                    if (recovery != null) tvGoogleRecovery.launch(recovery);
-                    else showTvAuthError("Google necesita una confirmación adicional, pero no entregó una pantalla de autorización.");
+                    finishDriveConnection();
+                    toast("Google Drive vinculado con Nube Música TV");
+                });
+            } catch (TvDeviceOAuth.Cancelled ignored) {
+                runOnUiThread(() -> {
+                    if (!isDestroyed() && serial == tvAuthSerial) connect.setEnabled(true);
                 });
             } catch (Exception e) {
                 String detail = e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
                 runOnUiThread(() -> {
-                    if (!isDestroyed()) {
-                        connect.setEnabled(true);
-                        showTvAuthError("No se pudo obtener el permiso de lectura de Drive: " + detail);
-                    }
+                    if (isDestroyed() || serial != tvAuthSerial) return;
+                    dismissTvDeviceDialog();
+                    connect.setEnabled(true);
+                    showTvDeviceError(detail);
                 });
             }
         });
     }
 
-    private void showTvAuthError(String message) {
+    private void showTvDeviceCode(TvDeviceOAuth.DeviceCode code, int serial) {
+        dismissTvDeviceDialog();
+        String message = "Desde tu teléfono o computador abre:\n\n"
+                + code.verificationUrl
+                + "\n\nIngresa este código exactamente como aparece:\n\n"
+                + code.userCode
+                + "\n\nAutoriza «Nube Música TV». La TV detectará la autorización automáticamente.";
+
+        tvDeviceDialog = new MaterialAlertDialogBuilder(this)
+                .setTitle("Vincular Google Drive")
+                .setMessage(message)
+                .setNegativeButton("Cancelar", (dialog, which) -> {
+                    if (serial == tvAuthSerial) {
+                        tvAuthSerial++;
+                        connect.setEnabled(true);
+                    }
+                })
+                .setCancelable(false)
+                .create();
+
+        tvDeviceDialog.setOnDismissListener(dialog -> {
+            if (serial == tvAuthSerial && !auth.isConnected()) connect.setEnabled(true);
+        });
+        tvDeviceDialog.show();
+
+        TextView messageView = tvDeviceDialog.findViewById(android.R.id.message);
+        if (messageView != null) {
+            messageView.setTextSize(TvUi.isTv(this) ? 21 : 17);
+            messageView.setTextIsSelectable(true);
+        }
+    }
+
+    private void dismissTvDeviceDialog() {
+        if (tvDeviceDialog != null) {
+            tvDeviceDialog.setOnDismissListener(null);
+            tvDeviceDialog.dismiss();
+            tvDeviceDialog = null;
+        }
+    }
+
+    private void showTvDeviceError(String message) {
         new MaterialAlertDialogBuilder(this)
-                .setTitle("No se pudo conectar Google Drive")
-                .setMessage(message + "\n\nEsta versión usa el flujo alternativo para Android TV. Comprueba que la cuenta esté añadida a la caja y también como usuario de prueba en Google Cloud.")
+                .setTitle("No se pudo vincular Google Drive")
+                .setMessage(message + "\n\nEsta versión usa el flujo oficial de Google para TVs. El permiso solicitado es drive.file, que limita Drive a los archivos autorizados para esta aplicación.")
                 .setPositiveButton("Cerrar", null)
                 .setNeutralButton("Reintentar", (dialog, which) -> connectTvDrive())
                 .show();
@@ -454,24 +475,37 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void showDriveSetup() {
+        if (TvUi.isTv(this)) {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Google Drive · Android TV")
+                    .setMessage("Nube Música TV usa un cliente OAuth independiente de tipo «TVs y dispositivos de entrada limitada».\n\nLa TV muestra un código y la autorización se completa desde el teléfono.\n\nPermiso del cliente TV: "
+                            + AuthManager.TV_SCOPE
+                            + "\n\nCredenciales de compilación: "
+                            + (TvDeviceOAuth.configured() ? "configuradas" : "faltantes")
+                            + ".\n\nGoogle Drive API debe permanecer habilitada y la cuenta debe estar permitida por la pantalla de consentimiento mientras el proyecto esté en modo Prueba.")
+                    .setPositiveButton("Cerrar", null)
+                    .show();
+            return;
+        }
+
         String details = "Paquete: " + getPackageName()
                 + "\nSHA-1: 5B:55:D0:A6:5D:D3:11:1D:0B:B7:15:FC:EA:68:9A:B4:60:AD:52:1A";
-        new MaterialAlertDialogBuilder(this).setTitle("Activar Google Drive")
-                .setMessage("Esta versión personal requiere registrar la app en tu proyecto de Google Cloud. Instalar la APK no completa ese registro.\n\n"
-                        + "1. Crea un proyecto y habilita Google Drive API.\n"
-                        + "2. Configura Google Auth Platform: nombre Nube Música, público Externo y tu correo como usuario de prueba.\n"
-                        + "3. Añade el permiso de lectura: " + AuthManager.SCOPE + ".\n"
-                        + "4. Crea un cliente de tipo Android con estos datos:\n\n" + details
-                        + "\n\nDespués vuelve a la app y pulsa Conectar Google Drive. La guía entregada incluye los pasos completos.")
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Activar Google Drive")
+                .setMessage("La versión Android usa el cliente OAuth de tipo Android.\n\nPermiso de lectura: " + AuthManager.SCOPE + "\n\n" + details)
                 .setPositiveButton("Abrir Google Cloud", (dialog, which) -> {
                     try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://console.cloud.google.com/"))); }
                     catch (android.content.ActivityNotFoundException e) { toast("Abre console.cloud.google.com en tu navegador."); }
                 })
                 .setNeutralButton("Copiar datos", (dialog, which) -> {
                     ClipboardManager clipboard = getSystemService(ClipboardManager.class);
-                    if (clipboard != null) { clipboard.setPrimaryClip(ClipData.newPlainText("Nube Música", details)); toast("Paquete y huella copiados"); }
+                    if (clipboard != null) {
+                        clipboard.setPrimaryClip(ClipData.newPlainText("Nube Música", details));
+                        toast("Paquete y huella copiados");
+                    }
                 })
-                .setNegativeButton("Cerrar", null).show();
+                .setNegativeButton("Cerrar", null)
+                .show();
     }
 
     private void updateAccount() {
@@ -833,7 +867,12 @@ public final class MainActivity extends AppCompatActivity {
         super.onStop();
     }
     @Override protected void onDestroy() {
-        requestId++; if (request != null) request.cancel(true); io.shutdownNow(); handler.removeCallbacksAndMessages(null);
+        tvAuthSerial++;
+        dismissTvDeviceDialog();
+        requestId++;
+        if (request != null) request.cancel(true);
+        io.shutdownNow();
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
