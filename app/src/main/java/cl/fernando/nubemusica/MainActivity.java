@@ -314,8 +314,8 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void connectTvDrive() {
-        if (!TvDeviceOAuth.configured()) {
-            showTvDeviceError("La APK no contiene las credenciales del cliente OAuth «Nube Música TV». Configura los secrets GOOGLE_TV_CLIENT_ID y GOOGLE_TV_CLIENT_SECRET en GitHub y vuelve a compilar.");
+        if (!FullDriveBridgeClient.configured()) {
+            showTvDeviceError("La URL de Nube Música Full Drive Bridge no está configurada en esta APK.");
             return;
         }
 
@@ -324,18 +324,20 @@ public final class MainActivity extends AppCompatActivity {
 
         io.execute(() -> {
             try {
-                TvDeviceOAuth.DeviceCode code = TvDeviceOAuth.requestCode();
+                FullDriveBridgeClient.PairCode pair = FullDriveBridgeClient.requestPair();
+
                 runOnUiThread(() -> {
-                    if (!isDestroyed() && serial == tvAuthSerial) showTvDeviceCode(code, serial);
+                    if (!isDestroyed() && serial == tvAuthSerial) showTvDeviceCode(pair, serial);
                 });
 
-                TvDeviceOAuth.Token token = TvDeviceOAuth.poll(
-                        code,
+                FullDriveBridgeClient.Token token = FullDriveBridgeClient.poll(
+                        pair,
                         () -> serial == tvAuthSerial && !Thread.currentThread().isInterrupted());
 
                 if (serial != tvAuthSerial) return;
-                auth.acceptDeviceToken(token);
+                auth.acceptBridgeToken(token);
                 long accountGeneration = auth.generation();
+
                 try {
                     String email = drive.accountEmail();
                     auth.rememberAccount(email, accountGeneration);
@@ -346,12 +348,14 @@ public final class MainActivity extends AppCompatActivity {
                     dismissTvDeviceDialog();
                     connect.setEnabled(true);
                     finishDriveConnection();
-                    toast("Google Drive vinculado con Nube Música TV");
+                    toast("Google Drive Full vinculado");
                 });
-            } catch (TvDeviceOAuth.Cancelled ignored) {
+
+            } catch (FullDriveBridgeClient.Cancelled ignored) {
                 runOnUiThread(() -> {
                     if (!isDestroyed() && serial == tvAuthSerial) connect.setEnabled(true);
                 });
+
             } catch (Exception e) {
                 String detail = e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
                 runOnUiThread(() -> {
@@ -364,16 +368,18 @@ public final class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showTvDeviceCode(TvDeviceOAuth.DeviceCode code, int serial) {
+    private void showTvDeviceCode(FullDriveBridgeClient.PairCode pair, int serial) {
         dismissTvDeviceDialog();
-        String message = "Desde tu teléfono o computador abre:\n\n"
-                + code.verificationUrl
-                + "\n\nIngresa este código exactamente como aparece:\n\n"
-                + code.userCode
-                + "\n\nAutoriza «Nube Música TV». La TV detectará la autorización automáticamente.";
+
+        String message = "Desde tu teléfono abre:\n\n"
+                + pair.verificationUrl
+                + "\n\nIngresa este código:\n\n"
+                + pair.userCode
+                + "\n\nElige la cuenta de Google que contiene tu música y autoriza acceso "
+                + "de solo lectura. La TV continuará automáticamente.";
 
         tvDeviceDialog = new MaterialAlertDialogBuilder(this)
-                .setTitle("Vincular Google Drive")
+                .setTitle("Vincular Google Drive Full")
                 .setMessage(message)
                 .setNegativeButton("Cancelar", (dialog, which) -> {
                     if (serial == tvAuthSerial) {
@@ -406,8 +412,9 @@ public final class MainActivity extends AppCompatActivity {
 
     private void showTvDeviceError(String message) {
         new MaterialAlertDialogBuilder(this)
-                .setTitle("No se pudo vincular Google Drive")
-                .setMessage(message + "\n\nEsta versión usa el flujo oficial de Google para TVs. El permiso solicitado es drive.file, que limita Drive a los archivos autorizados para esta aplicación.")
+                .setTitle("No se pudo vincular Google Drive Full")
+                .setMessage(message + "\n\nEsta versión usa Full Drive Bridge con permiso "
+                        + "drive.readonly para Mi Drive y Compartido conmigo.")
                 .setPositiveButton("Cerrar", null)
                 .setNeutralButton("Reintentar", (dialog, which) -> connectTvDrive())
                 .show();
@@ -477,12 +484,12 @@ public final class MainActivity extends AppCompatActivity {
     private void showDriveSetup() {
         if (TvUi.isTv(this)) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Google Drive · Android TV")
-                    .setMessage("Nube Música TV usa un cliente OAuth independiente de tipo «TVs y dispositivos de entrada limitada».\n\nLa TV muestra un código y la autorización se completa desde el teléfono.\n\nPermiso del cliente TV: "
-                            + AuthManager.TV_SCOPE
-                            + "\n\nCredenciales de compilación: "
-                            + (TvDeviceOAuth.configured() ? "configuradas" : "faltantes")
-                            + ".\n\nGoogle Drive API debe permanecer habilitada y la cuenta debe estar permitida por la pantalla de consentimiento mientras el proyecto esté en modo Prueba.")
+                    .setTitle("Google Drive Full · Android TV")
+                    .setMessage("Esta versión usa Nube Música Full Drive Bridge.\n\nPermiso: "
+                            + AuthManager.SCOPE
+                            + "\n\nPermite navegar Mi Drive, Compartido conmigo y realizar "
+                            + "búsquedas de solo lectura.\n\nBridge: "
+                            + (FullDriveBridgeClient.configured() ? "configurado" : "faltante"))
                     .setPositiveButton("Cerrar", null)
                     .show();
             return;

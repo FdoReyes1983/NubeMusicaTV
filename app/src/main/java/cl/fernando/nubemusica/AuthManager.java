@@ -17,11 +17,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-/** Teléfono: drive.readonly. Android TV: device flow oficial + drive.file. */
 public final class AuthManager {
     public static final String SCOPE = "https://www.googleapis.com/auth/drive.readonly";
     public static final String TV_SCOPE = "https://www.googleapis.com/auth/drive.file";
-    private static final String MODE_PHONE="phone", MODE_DEVICE="device";
+    private static final String MODE_PHONE="phone", MODE_DEVICE="device", MODE_BRIDGE="bridge";
 
     private final Context context;
     private final SharedPreferences preferences;
@@ -39,84 +38,115 @@ public final class AuthManager {
 
     public boolean isConnected(){return enabled;}
     public boolean isDeviceFlow(){return MODE_DEVICE.equals(mode);}
+    public boolean isBridgeFlow(){return MODE_BRIDGE.equals(mode);}
     public long generation(){return generation;}
     public String accountLabel(){return preferences.getString("email","Google Drive");}
 
     private AuthorizationRequest request(boolean chooseAccount){
-        AuthorizationRequest.Builder builder=AuthorizationRequest.builder().setRequestedScopes(Collections.singletonList(new Scope(SCOPE)));
+        AuthorizationRequest.Builder b=AuthorizationRequest.builder().setRequestedScopes(Collections.singletonList(new Scope(SCOPE)));
         String email=preferences.getString("email","");
-        if(chooseAccount) builder.setPrompt(AuthorizationRequest.Prompt.SELECT_ACCOUNT);
-        else if(!email.isEmpty()) builder.setAccount(new Account(email,"com.google"));
-        return builder.build();
+        if(chooseAccount)b.setPrompt(AuthorizationRequest.Prompt.SELECT_ACCOUNT);
+        else if(!email.isEmpty())b.setAccount(new Account(email,"com.google"));
+        return b.build();
     }
 
-    public Task<AuthorizationResult> authorize(Activity activity){return Identity.getAuthorizationClient(activity).authorize(request(!enabled));}
+    public Task<AuthorizationResult> authorize(Activity a){return Identity.getAuthorizationClient(a).authorize(request(!enabled));}
 
-    public synchronized void acceptInteractive(AuthorizationResult result)throws IOException{
-        verify(result); enabled=true; mode=MODE_PHONE; generation++; token=result.getAccessToken();
+    public synchronized void acceptInteractive(AuthorizationResult r)throws IOException{
+        verify(r);enabled=true;mode=MODE_PHONE;generation++;token=r.getAccessToken();
         expiresAt=SystemClock.elapsedRealtime()+TimeUnit.MINUTES.toMillis(50);
-        preferences.edit().putBoolean("enabled",true).putString("mode",MODE_PHONE).remove("refresh_token").apply();
+        preferences.edit().putBoolean("enabled",true).putString("mode",MODE_PHONE)
+                .remove("refresh_token").remove("bridge_pair_id").remove("bridge_pair_secret").apply();
     }
 
-    public synchronized void acceptDeviceToken(TvDeviceOAuth.Token result)throws IOException{
-        if(result==null||result.accessToken==null||result.accessToken.isEmpty()||result.refreshToken==null||result.refreshToken.isEmpty()) throw new NeedsAuthorization();
-        enabled=true; mode=MODE_DEVICE; generation++; token=result.accessToken;
-        expiresAt=SystemClock.elapsedRealtime()+TimeUnit.SECONDS.toMillis(Math.max(60,result.expiresIn-60));
-        preferences.edit().putBoolean("enabled",true).putString("mode",MODE_DEVICE).putString("refresh_token",result.refreshToken).putString("email","Google Drive TV").apply();
+    public synchronized void acceptDeviceToken(TvDeviceOAuth.Token r)throws IOException{
+        if(r==null||r.accessToken==null||r.accessToken.isEmpty()||r.refreshToken==null||r.refreshToken.isEmpty())throw new NeedsAuthorization();
+        enabled=true;mode=MODE_DEVICE;generation++;token=r.accessToken;
+        expiresAt=SystemClock.elapsedRealtime()+TimeUnit.SECONDS.toMillis(Math.max(60,r.expiresIn-60));
+        preferences.edit().putBoolean("enabled",true).putString("mode",MODE_DEVICE)
+                .putString("refresh_token",r.refreshToken).remove("bridge_pair_id").remove("bridge_pair_secret")
+                .putString("email","Google Drive TV").apply();
+    }
+
+    public synchronized void acceptBridgeToken(FullDriveBridgeClient.Token r)throws IOException{
+        if(r==null||r.accessToken==null||r.accessToken.isEmpty()||r.pairId==null||r.pairId.isEmpty()||r.secret==null||r.secret.isEmpty())throw new NeedsAuthorization();
+        enabled=true;mode=MODE_BRIDGE;generation++;token=r.accessToken;
+        expiresAt=SystemClock.elapsedRealtime()+TimeUnit.SECONDS.toMillis(Math.max(120,r.expiresIn-120));
+        preferences.edit().putBoolean("enabled",true).putString("mode",MODE_BRIDGE).remove("refresh_token")
+                .putString("bridge_pair_id",r.pairId).putString("bridge_pair_secret",r.secret)
+                .putString("email","Google Drive Full").apply();
     }
 
     public synchronized void rememberAccount(String email,long expectedGeneration){
-        if(email!=null&&!email.isEmpty()&&enabled&&generation==expectedGeneration) preferences.edit().putString("email",email).apply();
+        if(email!=null&&!email.isEmpty()&&enabled&&generation==expectedGeneration)
+            preferences.edit().putString("email",email).apply();
     }
 
-    private static void verify(AuthorizationResult result)throws IOException{
-        if(result.hasResolution()||result.getAccessToken()==null||!result.getGrantedScopes().contains(SCOPE)) throw new NeedsAuthorization();
+    private static void verify(AuthorizationResult r)throws IOException{
+        if(r.hasResolution()||r.getAccessToken()==null||!r.getGrantedScopes().contains(SCOPE))throw new NeedsAuthorization();
     }
 
     public String accessToken()throws IOException{
-        if(Looper.myLooper()==Looper.getMainLooper()) throw new IllegalStateException("Token requested on main thread");
-        if(!enabled) throw new NeedsAuthorization();
-        if(token!=null&&SystemClock.elapsedRealtime()<expiresAt) return token;
+        if(Looper.myLooper()==Looper.getMainLooper())throw new IllegalStateException("Token requested on main thread");
+        if(!enabled)throw new NeedsAuthorization();
+        if(token!=null&&SystemClock.elapsedRealtime()<expiresAt)return token;
+
         synchronized(refreshLock){
-            if(!enabled) throw new NeedsAuthorization();
-            if(token!=null&&SystemClock.elapsedRealtime()<expiresAt) return token;
-            long startedGeneration=generation;
+            if(!enabled)throw new NeedsAuthorization();
+            if(token!=null&&SystemClock.elapsedRealtime()<expiresAt)return token;
+            long g=generation;
             try{
                 String next; long nextExpiry;
-                if(MODE_DEVICE.equals(mode)){
-                    TvDeviceOAuth.Token refreshed=TvDeviceOAuth.refresh(preferences.getString("refresh_token",""));
-                    next=refreshed.accessToken;
-                    nextExpiry=SystemClock.elapsedRealtime()+TimeUnit.SECONDS.toMillis(Math.max(60,refreshed.expiresIn-60));
-                    if(refreshed.refreshToken!=null&&!refreshed.refreshToken.isEmpty()) preferences.edit().putString("refresh_token",refreshed.refreshToken).apply();
+                if(MODE_BRIDGE.equals(mode)){
+                    FullDriveBridgeClient.Token r=FullDriveBridgeClient.refresh(
+                            preferences.getString("bridge_pair_id",""),
+                            preferences.getString("bridge_pair_secret",""));
+                    next=r.accessToken;
+                    nextExpiry=SystemClock.elapsedRealtime()+TimeUnit.SECONDS.toMillis(Math.max(120,r.expiresIn-120));
+                }else if(MODE_DEVICE.equals(mode)){
+                    TvDeviceOAuth.Token r=TvDeviceOAuth.refresh(preferences.getString("refresh_token",""));
+                    next=r.accessToken;
+                    nextExpiry=SystemClock.elapsedRealtime()+TimeUnit.SECONDS.toMillis(Math.max(60,r.expiresIn-60));
+                    if(r.refreshToken!=null&&!r.refreshToken.isEmpty())
+                        preferences.edit().putString("refresh_token",r.refreshToken).apply();
                 }else{
-                    AuthorizationResult result=Tasks.await(Identity.getAuthorizationClient(context).authorize(request(false)),30,TimeUnit.SECONDS);
-                    verify(result); next=result.getAccessToken(); nextExpiry=SystemClock.elapsedRealtime()+TimeUnit.MINUTES.toMillis(50);
+                    AuthorizationResult r=Tasks.await(Identity.getAuthorizationClient(context).authorize(request(false)),30,TimeUnit.SECONDS);
+                    verify(r);next=r.getAccessToken();nextExpiry=SystemClock.elapsedRealtime()+TimeUnit.MINUTES.toMillis(50);
                 }
                 synchronized(this){
-                    if(!enabled||generation!=startedGeneration) throw new NeedsAuthorization();
-                    token=next; expiresAt=nextExpiry; return token;
+                    if(!enabled||generation!=g)throw new NeedsAuthorization();
+                    token=next;expiresAt=nextExpiry;return token;
                 }
             }catch(InterruptedException e){Thread.currentThread().interrupt();throw new IOException("Conexión interrumpida",e);}
             catch(NeedsAuthorization e){throw e;}
-            catch(Exception e){if(e instanceof IOException) throw (IOException)e; throw new IOException("No se pudo renovar el acceso a Drive. Abre la app y vuelve a conectar.",e);}
+            catch(Exception e){if(e instanceof IOException)throw (IOException)e;throw new IOException("No se pudo renovar el acceso a Drive. Abre la app y vuelve a conectar.",e);}
         }
     }
 
     public void invalidate(String rejectedToken)throws IOException{
         synchronized(this){if(rejectedToken.equals(token)){token=null;expiresAt=0;}}
-        if(MODE_DEVICE.equals(mode)) return;
-        try{Tasks.await(Identity.getAuthorizationClient(context).clearToken(ClearTokenRequest.builder().setToken(rejectedToken).build()),15,TimeUnit.SECONDS);}
+        if(MODE_BRIDGE.equals(mode)||MODE_DEVICE.equals(mode))return;
+        try{Tasks.await(Identity.getAuthorizationClient(context).clearToken(
+                ClearTokenRequest.builder().setToken(rejectedToken).build()),15,TimeUnit.SECONDS);}
         catch(InterruptedException e){Thread.currentThread().interrupt();throw new IOException("Conexión interrumpida",e);}
         catch(Exception e){throw new IOException("Vuelve a conectar Google Drive",e);}
     }
 
     public synchronized void disconnect(){
-        String old=token,oldMode=mode; enabled=false; mode=MODE_PHONE; token=null; expiresAt=0; generation++; preferences.edit().clear().apply();
-        if(old!=null&&!MODE_DEVICE.equals(oldMode)) Identity.getAuthorizationClient(context).clearToken(ClearTokenRequest.builder().setToken(old).build());
+        String old=token,oldMode=mode;
+        String pairId=preferences.getString("bridge_pair_id","");
+        String pairSecret=preferences.getString("bridge_pair_secret","");
+        enabled=false;mode=MODE_PHONE;token=null;expiresAt=0;generation++;preferences.edit().clear().apply();
+
+        if(MODE_BRIDGE.equals(oldMode)){
+            new Thread(() -> FullDriveBridgeClient.revoke(pairId,pairSecret),"full-drive-revoke").start();
+        }else if(old!=null&&!MODE_DEVICE.equals(oldMode)){
+            Identity.getAuthorizationClient(context).clearToken(ClearTokenRequest.builder().setToken(old).build());
+        }
     }
 
     public static class NeedsAuthorization extends IOException{
         public NeedsAuthorization(){super("Conecta Google Drive para continuar.");}
-        public NeedsAuthorization(String message){super(message);}
+        public NeedsAuthorization(String m){super(m);}
     }
 }

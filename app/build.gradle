@@ -12,10 +12,11 @@ android {
         applicationId 'cl.fernando.nubemusica'
         minSdk 26
         targetSdk 36
-        versionCode 10
-        versionName '0.5.0-tv4-device'
+        versionCode 11
+        versionName '0.5.0-tv5-full-drive'
         buildConfigField "String", "GOOGLE_TV_CLIENT_ID", "\"" + escapeBuildConfig(tvClientId) + "\""
         buildConfigField "String", "GOOGLE_TV_CLIENT_SECRET", "\"" + escapeBuildConfig(tvClientSecret) + "\""
+        buildConfigField "String", "FULL_DRIVE_BRIDGE_URL", "\"https://script.google.com/macros/s/AKfycbyCY581IzHbCtKoFaLlWi1UIoJKoTDd_o59RMQ9ZtONML3MEdaLJmqqkTA9GJsf7JYmjQ/exec\""
     }
     buildFeatures {
         buildConfig true
